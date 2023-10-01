@@ -29,6 +29,6 @@ let parseArgument (arg : string) =
     | _ -> ArgumentException "String was not a number" |> raise
     
 let parseCalcArguments(args : string[]) =
-    if not (isArgLengthSupported args) then
-        ArgumentException "Wrong argument length" |> raise
-    { arg1 = parseArgument(args[0]); arg2 = parseArgument(args[2]); operation = parseOperation(args[1]) }
+    match isArgLengthSupported args with
+    | false -> ArgumentException "Wrong argument length" |> raise
+    | true -> { arg1 = parseArgument args[0]; arg2 = parseArgument args[2]; operation = parseOperation args[1] }
