@@ -24,8 +24,9 @@ let parseOperation (arg : string) =
     | _ -> ArgumentException "Unknown operation" |> raise
     
 let parseArgument (arg : string) =
-    try float(arg)
-    with _ -> ArgumentException "Input string was not a number" |> raise
+    match Double.TryParse arg with
+    | true, n -> n
+    | _ -> ArgumentException "String was not a number" |> raise
     
 let parseCalcArguments(args : string[]) =
     if not (isArgLengthSupported args) then
