@@ -10,12 +10,12 @@ type CalcOptions = {
     operation: CalculatorOperation
 }
 
-let private isArgLengthSupported (args : string[]) =
+let isArgLengthSupported (args : string[]) =
     match args.Length with
     | 3 -> true
     | _ -> false
 
-let private parseOperation (arg : string) =
+let parseOperation (arg : string) =
     match arg with
     | "+" -> CalculatorOperation.Plus
     | "-" -> CalculatorOperation.Minus
@@ -23,7 +23,7 @@ let private parseOperation (arg : string) =
     | "/" -> CalculatorOperation.Divide
     | _ -> ArgumentException "Unknown operation" |> raise
     
-let private parseArgument (arg : string) =
+let parseArgument (arg : string) =
     try float(arg)
     with _ -> ArgumentException "Input string was not a number" |> raise
     

@@ -21,7 +21,20 @@ let ``+, -, *, / parsed correctly`` (operation, operationExpected) =
     //assert
     Assert.Equal(15.0, options.arg1)
     Assert.Equal(operationExpected, options.operation)
-    Assert.Equal(5.0, options.arg2); 
+    Assert.Equal(5.0, options.arg2)
+    
+[<HomeworkTheory(Homeworks.HomeWork4)>]
+[<InlineData("23.304", 23.304)>]
+[<InlineData("-123.304", -123.304)>]
+[<InlineData("492", 492.0)>]
+[<InlineData("-159", -159.0)>]
+let ``Numbers parsed correctly``(value, expectedValue) =
+    //arrange
+    let value = value
+    
+    //act/assert
+    Assert.Equal(expectedValue, parseArgument value)
+    
     
 [<HomeworkTheory(Homeworks.HomeWork4)>]
 [<InlineData("f", "+", "3")>]
@@ -49,3 +62,4 @@ let ``Incorrect argument count throws ArgumentException``() =
     
     // act/assert
     Assert.Throws<ArgumentException>(fun () -> parseCalcArguments args |> ignore)
+    
