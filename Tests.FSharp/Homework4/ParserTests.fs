@@ -5,7 +5,7 @@ open Hw4.Calculator
 open Hw4.Parser
 open Tests.RunLogic.Attributes
 open Xunit
-        
+
 [<HomeworkTheory(Homeworks.HomeWork4)>]
 [<InlineData("+", CalculatorOperation.Plus)>]
 [<InlineData("-", CalculatorOperation.Minus)>]
@@ -21,8 +21,8 @@ let ``+, -, *, / parsed correctly`` (operation, operationExpected) =
     //assert
     Assert.Equal(15.0, options.arg1)
     Assert.Equal(operationExpected, options.operation)
-    Assert.Equal(5.0, options.arg2); 
-    
+    Assert.Equal(5.0, options.arg2)
+
 [<HomeworkTheory(Homeworks.HomeWork4)>]
 [<InlineData("f", "+", "3")>]
 [<InlineData("3", "+", "f")>]
