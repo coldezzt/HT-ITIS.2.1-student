@@ -3,7 +3,6 @@
 open System
 open Hw4.Calculator
 
-
 type CalcOptions = {
     arg1: float
     arg2: float
