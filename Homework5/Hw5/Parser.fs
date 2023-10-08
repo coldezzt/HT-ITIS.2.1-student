@@ -1,15 +1,14 @@
 ﻿module Hw5.Parser
 
 open System
-open System.Globalization
 open Hw5
 open Hw5.Calculator
 open Hw5.MaybeBuilder
 open Microsoft.FSharp.Core
 
-let isArgLengthSupported (args:string[]): Result<'a,'b> =
+let isArgLengthSupported (args: string[]): Result<'a,'b> =
     match args.Length = 3 with
-    | true -> Ok args
+    | true -> Ok (args[0], args[1], args[2]) 
     | false -> Message.WrongArgLength |> Error
 
 [<System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage>]
@@ -21,13 +20,13 @@ let inline isOperationSupported (arg1, operation, arg2): Result<('a * Calculator
     | "/" -> Ok (arg1, CalculatorOperation.Divide, arg2)
     | _ -> Message.WrongArgFormatOperation |> Error
 
-let parseArgs (args: string[]): Result<('a * CalculatorOperation * 'b), Message> =
-    match args[0] |> Double.TryParse with
+let parseArgs (arg1: string, operation, arg2: string): Result<('a * CalculatorOperation * 'b), Message> =
+    match arg1 |> Double.TryParse with
     | false, _ -> Message.WrongArgFormat |> Error
     | true, arg1 ->
-        match args[2] |> Double.TryParse  with 
+        match arg2 |> Double.TryParse  with 
         | false, _ -> Message.WrongArgFormat |> Error
-        | true, arg2 -> isOperationSupported (arg1, args[1], arg2)
+        | true, arg2 -> Ok (arg1, operation, arg2)
 
 [<System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage>]
 let inline isDividingByZero (arg1, operation, arg2): Result<('a * CalculatorOperation * 'b), Message> =
@@ -39,10 +38,15 @@ let inline isDividingByZero (arg1, operation, arg2): Result<('a * CalculatorOper
     | _ -> Ok (arg1, operation, arg2)
     
 let parseCalcArguments (args: string[]): Result<'a, 'b> =
-    match isArgLengthSupported args with
-    | Error e -> e |> Error
-    | Ok args ->
-        let parsed = args |> parseArgs
-        match parsed with
-        | Ok s -> s |> isDividingByZero
-        | Error e -> e |> Error
+    maybe
+        {
+        let! x = isArgLengthSupported args
+        let! y = isOperationSupported x
+        let! z = parseArgs y
+        let! result = isDividingByZero z
+        return result
+        }
+        
+    // В коде выше если определить и заменить maybe на >=>,
+    // то получится то же самое.
+    
