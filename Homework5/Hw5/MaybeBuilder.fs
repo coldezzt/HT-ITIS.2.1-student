@@ -5,6 +5,7 @@ type MaybeBuilder() =
         match x with
         | Ok s -> f s
         | Error e -> Error e
+        
     member this.Return x: Result<'a,'b> =
         Ok x
         

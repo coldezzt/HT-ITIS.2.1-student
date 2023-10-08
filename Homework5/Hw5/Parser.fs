@@ -1,6 +1,7 @@
 ﻿module Hw5.Parser
 
 open System
+open System.Globalization
 open Hw5
 open Hw5.Calculator
 open Hw5.MaybeBuilder
@@ -21,10 +22,10 @@ let inline isOperationSupported (arg1, operation, arg2): Result<('a * Calculator
     | _ -> Message.WrongArgFormatOperation |> Error
 
 let parseArgs (args: string[]): Result<('a * CalculatorOperation * 'b), Message> =
-    match args[0].Replace(".", ",") |> Double.TryParse with
+    match args[0] |> Double.TryParse with
     | false, _ -> Message.WrongArgFormat |> Error
     | true, arg1 ->
-        match args[2].Replace(".", ",") |> Double.TryParse  with 
+        match args[2] |> Double.TryParse  with 
         | false, _ -> Message.WrongArgFormat |> Error
         | true, arg2 -> isOperationSupported (arg1, args[1], arg2)
 
