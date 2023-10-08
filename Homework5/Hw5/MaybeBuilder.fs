@@ -1,5 +1,6 @@
 ﻿module Hw5.MaybeBuilder
 
+[<System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage>]
 type MaybeBuilder() =
     member this.Bind(x, f): Result<'e,'d> =
         match x with
