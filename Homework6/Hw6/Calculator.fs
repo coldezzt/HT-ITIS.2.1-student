@@ -31,6 +31,7 @@ let isArgLengthSupported (args: string[]): Result<string * string * string, stri
     | true  -> Ok (args[0], args[1], args[2]) 
     | false -> "Wrong arguments length" |> Error
 
+[<System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage>]
 let inline isOperationSupported (arg1, operation, arg2): Result<('a * CalculatorOperation * 'b), string> =
     match operation with
     | "+" | "Plus"     -> Ok (arg1, CalculatorOperation.Plus, arg2)
@@ -47,6 +48,7 @@ let parseArgs (arg1: string, operation, arg2: string): Result<('a * CalculatorOp
         | false, _   -> $"Could not parse value '{arg2}'" |> Error
         | true, arg2 -> Ok (arg1, operation, arg2)
 
+[<System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage>]
 let inline isDividingByZero (arg1, operation, arg2): Result<('a * CalculatorOperation * 'b), string> =
     match operation with
     | CalculatorOperation.Divide ->
@@ -64,6 +66,7 @@ let parseCalcArguments (args: string[]): Result<('a * CalculatorOperation * 'a),
         return result
     }
    
+[<System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage>]
 let inline calculate value1 (operation : CalculatorOperation) value2 : ^a =
     match int operation with
     | 0 -> value1 + value2
