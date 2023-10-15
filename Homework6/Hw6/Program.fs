@@ -65,8 +65,10 @@ type CalculatorArguments =
 let calculatorHandler : HttpHandler =
     fun (next : HttpFunc) (ctx : HttpContext) ->
         task {
-            let! model = ctx.BindFormAsync<CalculatorArguments>()
-            let parsed = parseCalcArguments([|model.Value1; model.Operation; model.Value2|])
+            let arg1      = ctx.Request.Query["value1"].ToString()
+            let operation = ctx.Request.Query["operation"].ToString()
+            let arg2      = ctx.Request.Query["value2"].ToString()
+            let parsed = parseCalcArguments([|arg1; operation; arg2|])
             let result =
                 match parsed with
                 | Ok s ->
@@ -75,20 +77,17 @@ let calculatorHandler : HttpHandler =
                 | Error e -> Error (e.ToString())
             
             match result with
-            | Ok ok       -> return! (setStatusCode 200 >=> text ("Результат: " + ok.ToString())) next ctx
-            | Error error -> return! (setStatusCode 400 >=> text ("Ошибка: " + error)) next ctx
+            | Ok ok       -> return! (setStatusCode 200 >=> text (ok.ToString())) next ctx
+            | Error error -> return! (setStatusCode 400 >=> text error) next ctx
         }
         
 let webApp =
     choose [
         GET >=>
             choose [
-                 route "/"           >=> text "index page"
-                 route "/calculator" >=> htmlView calculatePage
-            ]
-        POST >=>
-            choose [
-                 route "/calculate"  >=> calculatorHandler
+                route "/"           >=> text "index page"
+                route "/calculator" >=> htmlView calculatePage
+                route "/calculate"  >=> calculatorHandler
             ]
         setStatusCode 404 >=> text "Not Found" 
     ]
