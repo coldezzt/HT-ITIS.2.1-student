@@ -26,6 +26,7 @@ type MaybeBuilder() =
     
 let maybe = MaybeBuilder()
 
+[<System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage>]
 let isArgLengthSupported (args: string[]): Result<string * string * string, string> =
     match args.Length = 3 with
     | true  -> Ok (args[0], args[1], args[2]) 
