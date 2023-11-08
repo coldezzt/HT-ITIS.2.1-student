@@ -21,7 +21,7 @@ public class CalculatorController : Controller
                 Operation.Minus => calculator.Minus(x, y),
                 Operation.Multiply => calculator.Multiply(x, y),
                 Operation.Divide => calculator.Divide(x, y),
-                Operation.Invalid => throw new ArgumentException(Messages.InvalidOperationMessage)
+                _ => throw new ArgumentException(Messages.InvalidOperationMessage)
             };
         }
         catch (Exception e)
