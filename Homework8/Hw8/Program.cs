@@ -10,6 +10,7 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        builder.Services.AddScoped<ICalculator, MyCalculator>();
         builder.Services.AddControllersWithViews();
 
         var app = builder.Build();
