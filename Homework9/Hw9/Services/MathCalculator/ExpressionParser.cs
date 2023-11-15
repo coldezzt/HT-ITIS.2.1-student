@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
+using Hw9.ErrorMessages;
 
 
 namespace Hw9.Services.MathCalculator;
@@ -59,18 +60,21 @@ public static class ExpressionParser
                         "*" => Expression.Multiply,
                         "-" => Expression.Subtract,
                         "+" => Expression.Add,
+                        _   => throw new ArgumentException(MathErrorMessager.UnknownCharacter)
                     };
                     Expression first = buffer.Pop(), second = buffer.Pop();
                     buffer.Push(expr(second, first)); // из-за использования стека
                     break;
                 }
+                default:
+                    throw new ArgumentException(MathErrorMessager.UnknownCharacter);
             }
         }
 
         return buffer.Pop();
     }
-    
-    internal static List<Part> ToReversePolishNotation(string infixExpression)
+
+    private static List<Part> ToReversePolishNotation(string infixExpression)
     {
         var ops = new Stack<string>();
         var result = new Stack<string>();
@@ -119,18 +123,21 @@ public static class ExpressionParser
         while (ops.Count > 0)
             PushOperation(ops, result);
 
-        return result.Pop()
+        if (!result.TryPop(out var x)) 
+            throw new ArgumentException();
+        
+        return x
             .Split(" ")
-            .Select(x => new Part 
+            .Select(s => new Part
             {
-                Value = x, 
-                Type = double.TryParse(x, 
-                    NumberStyles.Float, 
-                    CultureInfo.InvariantCulture, 
-                    out _) 
-                    ? PartType.Number 
-                    : x is "(" or ")" 
-                        ? PartType.Special 
+                Value = s,
+                Type = double.TryParse(s,
+                    NumberStyles.Float,
+                    CultureInfo.InvariantCulture,
+                    out _)
+                    ? PartType.Number
+                    : s is "(" or ")"
+                        ? PartType.Special
                         : PartType.Operator
             })
             .ToList();
