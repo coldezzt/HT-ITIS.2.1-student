@@ -19,8 +19,8 @@ public class BinaryExpressionVisitor : ExpressionVisitor
     private static async Task<double[]> CompileAsync(Expression left, Expression right)
     {
         await Task.Delay(1000); // имитация работы
-        var t1 = Task.Run(() => Expression.Lambda<Func<double>>(left).Compile().Invoke());
-        var t2 = Task.Run(() => Expression.Lambda<Func<double>>(right).Compile().Invoke());
+        var t1 = Task.Run(() => Expression.Lambda<Func<double>>(VisitExpression(left).Result).Compile().Invoke());
+        var t2 = Task.Run(() => Expression.Lambda<Func<double>>(VisitExpression(right).Result).Compile().Invoke());
         return await Task.WhenAll(t1, t2);
     }
     
