@@ -37,9 +37,30 @@ public static class ExpressionParser
     public static Expression CreateFromString(string s)
     {
         var reversePolish = ToReversePolishNotation(s);
-        return CreateFromReversePolishNotation(reversePolish);
+        var parted = CreatePartedPolishNotation(reversePolish);
+        return CreateFromReversePolishNotation(parted);
     }
-    
+
+    private static List<Part> CreatePartedPolishNotation(string reversePolish)
+    {
+        var l = new List<Part>();
+        foreach (var s in reversePolish.Split(" "))
+        {
+            var p = new Part {Value = s};
+            if (double.TryParse(s, out var x))
+                p.Type = PartType.Number;
+            
+            else if (s is "(" or ")")
+                p.Type = PartType.Special;
+
+            else p.Type = PartType.Operator;
+
+            l.Add(p);
+        }
+
+        return l;
+    }
+
     private static Expression CreateFromReversePolishNotation(List<Part> parts)
     {
         var buffer = new Stack<Expression>();
@@ -59,22 +80,19 @@ public static class ExpressionParser
                         "/" => Expression.Divide,
                         "*" => Expression.Multiply,
                         "-" => Expression.Subtract,
-                        "+" => Expression.Add,
-                        _   => throw new ArgumentException(MathErrorMessager.UnknownCharacter)
+                        _ => Expression.Add
                     };
                     Expression first = buffer.Pop(), second = buffer.Pop();
                     buffer.Push(expr(second, first)); // из-за использования стека
                     break;
                 }
-                default:
-                    throw new ArgumentException(MathErrorMessager.UnknownCharacter);
             }
         }
 
         return buffer.Pop();
     }
 
-    private static List<Part> ToReversePolishNotation(string infixExpression)
+    private static string ToReversePolishNotation(string infixExpression)
     {
         var ops = new Stack<string>();
         var result = new Stack<string>();
@@ -123,24 +141,8 @@ public static class ExpressionParser
         while (ops.Count > 0)
             PushOperation(ops, result);
 
-        if (!result.TryPop(out var x)) 
-            throw new ArgumentException();
         
-        return x
-            .Split(" ")
-            .Select(s => new Part
-            {
-                Value = s,
-                Type = double.TryParse(s,
-                    NumberStyles.Float,
-                    CultureInfo.InvariantCulture,
-                    out _)
-                    ? PartType.Number
-                    : s is "(" or ")"
-                        ? PartType.Special
-                        : PartType.Operator
-            })
-            .ToList();
+        return result.Pop();
     }
     
     private static void PushOperation(Stack<string> operations, Stack<string> polish)
