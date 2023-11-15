@@ -49,9 +49,6 @@ public static class ExpressionParser
             var p = new Part {Value = s};
             if (double.TryParse(s, out var x))
                 p.Type = PartType.Number;
-            
-            else if (s is "(" or ")")
-                p.Type = PartType.Special;
 
             else p.Type = PartType.Operator;
 
