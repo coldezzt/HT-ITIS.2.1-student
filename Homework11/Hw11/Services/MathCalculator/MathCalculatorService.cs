@@ -9,7 +9,7 @@ public class MathCalculatorService : IMathCalculatorService
         ExpressionValidator.Validate(expression);
         var expr = ExpressionParser.CreateFromString(expression!);
         var compiled = Expression.Lambda<Func<double>>(
-            await MyExpressionVisitor.VisitExpression((dynamic)expr));
+            await MyExpressionVisitor.VisitExpression(expr));
         var result = compiled.Compile().Invoke();
         return result;
     }
