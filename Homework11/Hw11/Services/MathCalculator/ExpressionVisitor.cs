@@ -7,53 +7,16 @@ namespace Hw11.Services.MathCalculator;
 [ExcludeFromCodeCoverage]
 public static class MyExpressionVisitor
 {
-    public static Task<Expression> VisitExpression(Expression expr) =>
-        Task.Run(() => VisitDispatcher(expr));
+    public static Task<Expression> VisitExpression(Expression expr) => 
+        CreateExpression((dynamic) expr);
 
-    private static Expression VisitDispatcher(Expression expr)
-    {
-        Thread.Sleep(800); // имитация работы
-        try
-        {
-            return Visit((dynamic) expr).Result;
-        }
-        catch
-        {
-            throw new Exception(MathErrorMessager.DivisionByZero);
-        }
-    }
-    
-    private static async Task<Expression> Visit(ConstantExpression node)
-    {
-        return CreateExpression(node, (double) node.Value! );
-    }
-    
-    private static async Task<Expression> Visit(BinaryExpression node)
-    {
-        var expressionValues = new List<double>(await CompileNodes(node.Left, node.Right));
-        return CreateExpression(node, expressionValues);
-    }
-    
-    private static async Task<double[]> CompileNodes(params Expression[] nodes)
-    {
-        var tasks = nodes
-            .Select(node => 
-                Task.Run(() => Expression
-                    .Lambda<Func<double>>(VisitExpression(node).Result)
-                    .Compile()
-                    .Invoke()))
-            .ToList();
-        await Task.WhenAll(tasks);
-        return tasks.Select(x => x.Result).ToArray();
-    }
+    private static async Task<Expression> CreateExpression(ConstantExpression expr) => 
+        Expression.Constant((double) expr.Value!);
 
-    private static Expression CreateExpression(ConstantExpression expr, double value)
+    private static async Task<Expression> CreateExpression(BinaryExpression expression)
     {
-        return Expression.Constant(value);
-    }
-    
-    private static Expression CreateExpression(BinaryExpression expression, IReadOnlyList<double> values)
-    {
+        var values = new List<double>(await CompileNodes(expression.Left, expression.Right));
+
         if (expression.NodeType is ExpressionType.Divide 
             && Math.Abs(values[1] - double.Epsilon) < 0.00001)
             throw new Exception(MathErrorMessager.DivisionByZero);
@@ -67,5 +30,20 @@ public static class MyExpressionVisitor
         };
 
         return expr(Expression.Constant(values[0]), Expression.Constant(values[1]));
+    }
+    
+    private static async Task<double[]> CompileNodes(params Expression[] nodes)
+    {
+        await Task.Delay(1000); // имитация работы
+        var tasks = new List<Task<double>>();
+        foreach (var node in nodes)
+        {
+                tasks.Add(Task.Run(() => Expression
+                    .Lambda<Func<double>>(VisitExpression(node).Result)
+                    .Compile()
+                    .Invoke()));
+        }
+        await Task.WhenAll(tasks);
+        return tasks.Select(x => x.Result).ToArray();
     }
 }
