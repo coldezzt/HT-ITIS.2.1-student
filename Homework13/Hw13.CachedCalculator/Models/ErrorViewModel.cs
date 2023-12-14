@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Hw13.CachedCalculator.Models;
 
+[ExcludeFromCodeCoverage]
 public class ErrorViewModel
 {
     public string? RequestId { get; set; }

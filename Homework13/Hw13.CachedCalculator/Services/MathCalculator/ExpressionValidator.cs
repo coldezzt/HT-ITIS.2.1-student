@@ -1,8 +1,10 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Hw13.CachedCalculator.ErrorMessages;
 
 namespace Hw13.CachedCalculator.Services.MathCalculator;
 
+[ExcludeFromCodeCoverage]
 public static class ExpressionValidator
 {
     public static void Validate(string? expression)

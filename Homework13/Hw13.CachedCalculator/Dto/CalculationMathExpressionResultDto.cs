@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Hw13.CachedCalculator.Dto;
 
+[ExcludeFromCodeCoverage]
 public class CalculationMathExpressionResultDto
 {
     public bool IsSuccess { get; set; }

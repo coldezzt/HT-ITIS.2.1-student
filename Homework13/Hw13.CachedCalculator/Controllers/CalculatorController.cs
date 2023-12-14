@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Hw13.CachedCalculator.Controllers;
 
+[ExcludeFromCodeCoverage]
 public class CalculatorController : Controller
 {
     private readonly IMathCalculatorService _mathCalculatorService;

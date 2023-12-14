@@ -1,8 +1,10 @@
-﻿using Hw13.CachedCalculator.Dto;
+﻿using System.Diagnostics.CodeAnalysis;
+using Hw13.CachedCalculator.Dto;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Hw13.CachedCalculator.Services.CachedCalculator;
 
+[ExcludeFromCodeCoverage]
 public class MathCachedCalculatorService : IMathCalculatorService
 {
     private readonly IMemoryCache _memoryCache;

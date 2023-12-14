@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 
@@ -9,12 +10,14 @@ internal enum PartType
     Operator
 }
 
+[ExcludeFromCodeCoverage]
 internal class Part
 {
     internal string Value { get; set; }
     internal PartType Type { get; set; }
 }
 
+[ExcludeFromCodeCoverage]
 public static class ExpressionParser
 {
     private static Regex _numbers = new(@"^\d+");
